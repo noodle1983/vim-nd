@@ -1,0 +1,4 @@
+1. rename to .vim
+2. bashrc: . ~/.vim/bin/setenv
+3. tar vim plugin here
+

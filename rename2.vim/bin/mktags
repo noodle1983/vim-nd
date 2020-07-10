@@ -1,0 +1,26 @@
+#!/bin/bash
+FILE_DIR=$1
+if [ ! -n "$FILE_DIR" ]; then
+    FILE_DIR=.
+fi
+rm -rf cscope*
+find $FILE_DIR \( -name SCCS -prune \
+    -o -name '*.c' -o -name '*.cpp' -o -name '*.h' \
+        -o -name '*.hpp' \
+        -o -name '*.cc' \
+        -o -name '*.java' \
+        -o -name '*.cs' \
+        -o -name '*.lua' \
+        -o -name '*.mm' \
+        -o -name '*.m' \
+        -o -name '*.py' \
+        -o -name "*.scala" \) > cscope.files
+sed -i -e "/libunwind-0.99-beta/d" \
+       -e "/openssl-1.0.0p/d" \
+       -e "/zlib-1.2.8/d" \
+       -e "/c-ares-1.10.0/d" \
+       -e "/curl-7.41.0/d" \
+    cscope.files
+cscope -Rkb -i cscope.files
+
+       #-e "/gperftools-2.1/d" \

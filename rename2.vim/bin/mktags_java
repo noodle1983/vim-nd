@@ -1,0 +1,5 @@
+#!/bin/bash
+find /vobs/miep -name '*.java'  \
+ |grep -v "/test/" > cscope.files
+cscope -Rkqb -i cscope.files
+

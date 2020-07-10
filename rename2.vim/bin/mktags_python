@@ -1,0 +1,4 @@
+#!/bin/bash
+find . \( -name SCCS -prune -o -name '*.py' \) > cscope.files
+cscope -b -i cscope.files
+

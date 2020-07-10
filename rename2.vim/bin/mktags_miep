@@ -1,0 +1,5 @@
+#!/bin/bash
+find /vobs/miep \( -name SCCS -prune -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.y' \) \
+ |grep -v "/test/" > cscope.files
+cscope -Rkqb -i cscope.files
+
