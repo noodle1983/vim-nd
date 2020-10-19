@@ -1,0 +1,10 @@
+#!/bin/bash
+
+PARAMS=$@
+
+function run_until_success(){
+    echo "-> $PARAMS"
+    ($PARAMS) || (echo "-> $PARAMS failed, wait 1 sec..."; sleep 1; run_until_success)
+}
+
+run_until_success

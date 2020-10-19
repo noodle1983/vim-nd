@@ -1,10 +1,13 @@
 #!/bin/bash
 
-PARAMS=$@
+SELF_PATH=$0
+if [ -L $SELF_PATH ]; then
+    SELF_PATH=`readlink $SELF_PATH`
+fi
 
-function pull_until_success(){
-    echo "-> git pull $PARAMS"
-    (git pull $PARAMS) || (echo "->pull failed, wait 1 sec..."; sleep 1; pull_until_success)
-}
+SELF_DIR=`dirname $SELF_PATH`
+if [ ${SELF_DIR:0:1} != "/" ]; then
+    SELF_DIR="$PWD/$SELF_DIR"
+fi
 
-pull_until_success
+$SELF_DIR/run_until_success git pull
