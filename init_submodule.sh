@@ -11,6 +11,6 @@ cat >>.git/config <<END_OF_NEW_BRANCH
         merge = refs/heads/master
 END_OF_NEW_BRANCH
 
-../nd_pull.sh --no-rebase --depth 1
+../pull.sh --no-rebase --depth 1
 cd -
 

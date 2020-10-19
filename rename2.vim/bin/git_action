@@ -1,0 +1,18 @@
+#!/bin/bash
+
+SELF_PATH=$0
+SELF_NAME=`basename $SELF_PATH`
+CMD_NAME=${SELF_NAME%%.*}
+
+SELF_DIR=`dirname $SELF_PATH`
+if [ -L $SELF_PATH ]; then
+    SELF_NAME=`readlink $SELF_PATH`
+    SELF_PATH="$SELF_DIR/$SELF_NAME"
+fi
+
+SELF_DIR=`dirname $SELF_PATH`
+if [ ${SELF_DIR:0:1} != "/" ]; then
+    SELF_DIR="$PWD/$SELF_DIR"
+fi
+
+$SELF_DIR/run_until_success git ${CMD_NAME}
