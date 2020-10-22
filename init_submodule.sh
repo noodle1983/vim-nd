@@ -4,6 +4,7 @@ mkdir -p vim
 cd vim 
 git init .
 git remote add origin https://github.com/vim/vim.git 
+<<<<<<< HEAD
 cat >>.git/config <<END_OF_NEW_BRANCH
 
 [branch "master"]
@@ -13,6 +14,7 @@ END_OF_NEW_BRANCH
 
 # git config --global http.proxy http://127.0.0.1:1080
 # git config --global https.proxy http://127.0.0.1:1080
-../pull.sh --no-rebase --depth 1
+../rename2.vim/bin/fetch.sh --depth 1
+git checkout -b master origin/master
 cd -
 
