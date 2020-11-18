@@ -1,7 +1,8 @@
 #!/bin/bash
 #1. install
 yum install -y lua-devel luarocks
-luarocks install luacheck
+#luarocks install luacheck
+luarocks install https://raw.githubusercontent.com/luarocks/luacheck/master/luacheck-dev-1.rockspec
 luarocks install lanes
 
 #2. install pathogen
