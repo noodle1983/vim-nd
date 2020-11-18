@@ -2,6 +2,7 @@
 VIM_DIR_NAME=vim8
 
 cd vim
+export CFLAGS=-fPIC
 ./configure  \
 	--with-features=huge \
 	--enable-fontset \
