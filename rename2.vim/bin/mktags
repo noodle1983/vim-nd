@@ -20,6 +20,8 @@ sed -i -e "/libunwind-0.99-beta/d" \
        -e "/zlib-1.2.8/d" \
        -e "/c-ares-1.10.0/d" \
        -e "/curl-7.41.0/d" \
+       -e 's/^/"/g' \
+       -e 's/$/"/g' \
     cscope.files
 cscope -Rkb -i cscope.files
 
