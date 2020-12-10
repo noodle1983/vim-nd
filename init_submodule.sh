@@ -4,9 +4,8 @@ mkdir -p vim
 cd vim 
 git init .
 git remote add origin https://github.com/vim/vim.git 
-<<<<<<< HEAD
-cat >>.git/config <<END_OF_NEW_BRANCH
 
+cat >>.git/config <<END_OF_NEW_BRANCH
 [branch "master"]
         remote = origin
         merge = refs/heads/master
