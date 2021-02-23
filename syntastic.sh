@@ -23,5 +23,7 @@ execute pathogen#infect()
 let g:syntastic_check_on_open = 1
 let g:syntastic_lua_checkers = ["luac", "luacheck"]
 let g:syntastic_lua_luacheck_args = "--no-unused-args"
+let g:syntastic_cpp_config_file = "./.syntastic_cpp_config"
+let g:syntastic_c_config_file = "./.syntastic_c_config"
 END_SET_ENV
 
