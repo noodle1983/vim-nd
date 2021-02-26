@@ -1,5 +1,5 @@
 #!/bin/bash
-FILE_DIR=$1
+FILE_DIR=$@
 if [ ! -n "$FILE_DIR" ]; then
     FILE_DIR=.
 fi
