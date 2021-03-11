@@ -31,3 +31,4 @@ let g:winManagerWindowLayout = "FileExplorer,TagsExplorer"
 
 set selection=exclusive 
 set selectmode=mouse,key 
+set clipboard=unnamed
