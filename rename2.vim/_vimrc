@@ -1,0 +1,33 @@
+set langmenu=en_US.UTF-8    
+language en                 
+set encoding=utf-8
+
+set ru
+set nu
+set cindent
+set autoindent
+set tabstop=4
+set expandtab
+set shiftwidth=4
+set showmatch
+colorscheme desert
+filetype plugin indent on
+syntax on
+set hlsearch
+
+let Tlist_Auto_Open=0
+let Tlist_Show_One_File = 1
+let Tlist_Exit_OnlyWindow = 1
+let Tlist_Use_Right_Window = 1
+
+set foldenable 
+set foldmethod=syntax 
+set foldlevel=100 
+set foldopen -=search 
+set foldopen -=undo 
+
+map <f2> :WMToggle<cr>
+
+set selection=exclusive 
+set selectmode=mouse,key 
+set clipboard=unnamed
