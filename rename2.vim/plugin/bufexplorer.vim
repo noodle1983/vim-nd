@@ -151,9 +151,7 @@ endfunction
 function s:MRUPush(buf)
                                 " Skip temporary buffer with buftype set. Don't add the BufExplorer window to the
                                 " list.
-  if !empty(getbufvar(a:buf, "&buftype")) ||
-      \ !buflisted(a:buf) || empty(bufname(a:buf)) ||
-      \ fnamemodify(bufname(a:buf), ":t") == "[BufExplorer]"
+  if !empty(getbufvar(a:buf, "&buftype")) || !buflisted(a:buf) || empty(bufname(a:buf)) || fnamemodify(bufname(a:buf), ":t") == "[BufExplorer]"
     return
   end
                                 " Remove the buffer number from the list if it already exists.
