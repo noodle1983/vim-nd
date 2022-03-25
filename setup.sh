@@ -18,7 +18,7 @@ export CFLAGS=-fPIC
 	--enable-multibyte \
 	--with-compiledby="brooksj" \
 	--disable-gui \
-	--with-x \
+	--without-x \
 	--prefix=$HOME/$VIM_DIR_NAME 
 make install
 cd -
