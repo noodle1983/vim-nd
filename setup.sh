@@ -1,5 +1,5 @@
 #!/bin/bash
-VIM_DIR_NAME=vim8
+VIM_DIR_NAME=vim90
 
 cd vim
 export CFLAGS=-fPIC
@@ -29,7 +29,7 @@ tar -C ./rename2.vim/ -cf - 'bin' | tar -C $HOME/$VIM_DIR_NAME/ -xf -
 cp ./rename2.vim/vimrc ~/.vimrc
 cat >$HOME/$VIM_DIR_NAME/bin/setenv <<END_SET_ENV
 export PATH=~/$VIM_DIR_NAME/bin:\$PATH
-export VIM=~/$VIM_DIR_NAME/share/vim/vim82
+export VIM=~/$VIM_DIR_NAME/share/vim/vim90
 #export CSCOPE_DB=./cscope.out:./cscope.in.out:./cscope.po.out
 END_SET_ENV
 
