@@ -55,7 +55,6 @@ if ($git_cmd eq "clone") {
         }
 
     }
-    print "[$command]\n";
     run_until_success($command);
 }
 
@@ -70,6 +69,7 @@ sub run_until_success
             print "retry $retry, run_until_success: $command\n";
         }
         else{
+            print "========================================\n";
             print "run_until_success: $command\n";
         }
         $ret = system("$command\n");
@@ -96,6 +96,7 @@ sub run_until_success
         #}
         
         printf "\t[$command]exited with value %d\n", $ret;
+        print "========================================\n";
         break;
     }
 
