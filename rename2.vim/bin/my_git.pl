@@ -30,17 +30,17 @@ if ($git_cmd eq "clone") {
 
     die "can't cd to dir:$local_dir\n" unless chdir($local_dir); 
     if (not -d ".git"){
-        system('git init .');
+        system("$GIT_EXE init .");
     }
 
-    system("git remote add origin $url 2>/dev/null");
-    run_until_success('git fetch origin');
-    run_until_success('git remote set-head origin --auto');
+    system("$GIT_EXE remote add origin $url 2>/dev/null");
+    run_until_success("$GIT_EXE fetch origin");
+    run_until_success("$GIT_EXE remote set-head origin --auto");
 
-    my $def_branch_name = `git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null`;
+    my $def_branch_name = `$GIT_EXE symbolic-ref refs/remotes/origin/HEAD 2>/dev/null`;
     $def_branch_name =~ s/^.*\///g;
     die "can't get default branch name!" unless $def_branch_name;
-    system("git checkout -f $def_branch_name");
+    system("$GIT_EXE checkout -f $def_branch_name");
     
 }else{
     my $command = "$GIT_EXE";
