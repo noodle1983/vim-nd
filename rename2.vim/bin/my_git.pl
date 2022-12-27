@@ -9,9 +9,14 @@ my $git_cmd = $ARGV[0];
 if ($git_cmd eq "clone") {
     my $url = "";
     my $local_dir = "";
+    my $recursive = 0;
     for(my $i = 1; $i < $argc; $i++) {
         my $option = $ARGV[$i];
-        die "not support option:$option." if $option =~ m/^-/; 
+	if ($option =~ m/^--recurs/) {
+            $recursive = 1;
+	}else{
+            die "not support option:$option. ignore!" if $option =~ m/^-/; 
+        }
 
         if (not $url){
             $url = $option;
@@ -41,6 +46,10 @@ if ($git_cmd eq "clone") {
     $def_branch_name =~ s/^.*\///g;
     die "can't get default branch name!" unless $def_branch_name;
     system("$GIT_EXE checkout -f $def_branch_name");
+    if ($recursive) {
+        run_until_success("$GIT_EXE submodule update --init --recursive");
+        run_until_success("$GIT_EXE submodule update --recursive");
+    }
     
 }else{
     my $command = "$GIT_EXE";
@@ -55,7 +64,11 @@ if ($git_cmd eq "clone") {
         }
 
     }
-    run_until_success($command);
+    if ($git_cmd eq "checkout") {
+        system($command);
+    }else{
+        run_until_success($command);
+    }
 }
 
 sub run_until_success
@@ -66,15 +79,10 @@ sub run_until_success
     my $ret = -1;
     while($ret != 0){
         if ($retry){
-            print "retry $retry, run_until_success: $command\n";
-        }
-        else{
-            print "========================================\n";
-            print "run_until_success: $command\n";
+            print "ret: $ret, retry $retry, run_until_success: $command\n";
         }
         $ret = system("$command\n");
         if ($ret != 0){
-            printf "\t[$command]exited with value %d\n", $ret;
             sleep(1);
             $retry++;
             next;
@@ -95,8 +103,6 @@ sub run_until_success
         #    printf "\t[$command]exited with value %d\n", $ret;
         #}
         
-        printf "\t[$command]exited with value %d\n", $ret;
-        print "========================================\n";
         break;
     }
 
