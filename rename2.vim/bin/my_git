@@ -1,0 +1,226 @@
+#!/usr/bin/perl
+use Cwd;
+
+my $home_dir = $ENV{"HOME"};
+
+my $dir = getcwd;
+my $GIT_EXE="/usr/bin/git.org";
+my_log("\n->run[$dir] git @ARGV");
+
+my $argc = scalar @ARGV;
+my $git_cmd = $ARGV[0];
+if ($git_cmd =~ /^-/){
+    for(my $i = 1; $i < $argc; $i++) {
+        my $option = $ARGV[$i];
+        next if ($option =~ /^-/);
+        next if ($option =~ /=/);
+        next if ($option =~ /\//);
+        next if ($option =~ /\\/);
+        next if ($option =~ /:/);
+        next if ($option =~ /\d/);
+
+	last unless $option =~ 'clone';
+
+	splice(@ARGV, $i, 1);
+	$git_cmd = $option;
+	unshift(@ARGV, $git_cmd);
+	last;
+    }
+}
+my_log("->shaped: git @ARGV");
+
+# git clone
+if ($git_cmd eq "clone") {
+    my $org_url = "";
+    my $url = "";
+    my $local_dir = "";
+    my $recursive = 0;
+    my $extra_option = "";
+    my $def_branch_name = "";
+    my $shallow = 0;
+    my $checkout = 1;
+    for(my $i = 1; $i < $argc; $i++) {
+        my $option = $ARGV[$i];
+	if ($option =~ m/^--recurs/) {
+            $recursive = 1;
+	    next;
+        }elsif ($option =~ m/^--depth=/) {
+            $extra_option .= " $option";
+	    $shallow = 1;
+	    next;
+        }elsif ($option =~ m/^--depth/) {
+            $i++;
+            $extra_option .= " $option " . $ARGV[$i];
+	    $shallow = 1;
+	    next;
+        }elsif ($option =~ m/^--no-checkout/ or $option eq '-n') {
+            $checkout = 0;
+	    next;
+        }elsif ($option =~ m/^--branch/) {
+            $i++;
+            $def_branch_name = $ARGV[$i];
+	    next;
+        }elsif ($option eq '--progress') {
+	    next;
+        }elsif ($option =~ m/^-c/) {
+            $i++;
+	    next;
+        }elsif ($option =~ m/^-b(.*)$/) {
+            $def_branch_name = $1;
+	    if (not $def_branch_name)
+	    {
+	        $i++;
+	        $def_branch_name = $ARGV[$i];
+	    }
+	    next;
+	}else{
+            die "not support option:$option. ignore!" if $option =~ m/^-/; 
+        }
+
+        if (not $url){
+            $org_url = $option;
+            $url = get_repo_cache($option);
+	    $ARGV[$i] = $url;
+        }else{
+            $local_dir = $option;
+        }
+    }
+    if ($org_url ne $url){
+        run_until_success("$GIT_EXE @ARGV");
+	exit(0);
+    }
+    if (not $local_dir){
+        $local_dir = $url;
+        $local_dir =~ s/\/$//;
+        $local_dir =~ s/\.git$//;
+        $local_dir =~ s/^.*\///;
+    }
+    die "can't get local dir, url:$url\n" unless $local_dir; 
+    mkdir($local_dir);
+
+    die "can't cd to dir:$local_dir\n" unless chdir($local_dir); 
+    if (not -d ".git"){
+        system("$GIT_EXE init .");
+    }
+
+    system("$GIT_EXE remote add origin $url 2>/dev/null");
+    if ($shallow or ($org_url ne $url)){
+        run_until_success("$GIT_EXE fetch $extra_option --tags origin");
+    }
+    else{
+        run_until_success("$GIT_EXE fetch --depth 1 origin");
+	my $fetch_count = 1;
+	#my $local_commit_count = int(`$GIT_EXE rev-list --all |wc -l`);
+	#while($fetch_count <= $local_commit_count){
+	my $shallow_dir = `$GIT_EXE rev-parse --git-dir`;
+	chomp $shallow_dir;
+	$shallow_dir .= "/shallow";
+	my $step = 1000;
+	while(-e "$shallow_dir"){
+	    $fetch_count += $step;
+            my $retry = run_until_success("$GIT_EXE fetch --depth $fetch_count origin", 30);
+	    $step = ($retry == 0) ? ($step * 2) : ($step + 1);
+	    `$GIT_EXE fetch --unshallow origin` if $retry >= 29;
+
+	    #$local_commit_count = int(`$GIT_EXE rev-list --all |wc -l`);
+	}
+        run_until_success("$GIT_EXE fetch --tags origin");
+    }
+    run_until_success("$GIT_EXE remote set-head origin --auto", 30);
+
+    if (not $def_branch_name){
+        $def_branch_name = `$GIT_EXE symbolic-ref refs/remotes/origin/HEAD 2>/dev/null`;
+        $def_branch_name =~ s/^.*\///g;
+    }
+    if (not $def_branch_name){
+        if (-e '.git/refs/remotes/origin/main'){
+	    $def_branch_name = "main";
+	}else{
+	    $def_branch_name = "master";
+	}
+    }
+    if($checkout){
+    	system("$GIT_EXE checkout -f $def_branch_name");
+    }
+    if ($recursive) {
+        run_until_success("$GIT_EXE submodule update --init --recursive");
+        run_until_success("$GIT_EXE submodule update --recursive");
+        run_until_success("$GIT_EXE submodule foreach --recursive $GIT_EXE reset --hard");
+    }
+    
+}else{
+    my $command = "$GIT_EXE";
+    for(my $i = 0; $i < $argc; $i++) {
+        my $option = $ARGV[$i];
+        
+        if ($option =~ m/ /){
+            $command .= " \"$option\"";
+        }
+        else{
+            $command .= " $option";
+        }
+
+    }
+    if ($git_cmd eq "checkout"
+        or $git_cmd eq "rev-parse"
+        or $git_cmd eq "HEAD"
+        or $git_cmd eq "status"
+        or $git_cmd eq "tag"
+        or $git_cmd eq "branch"
+        or $git_cmd eq "log"
+        or $git_cmd eq "config"
+	    ) {
+        system($command);
+    }else{
+        run_until_success($command);
+    }
+}
+
+sub run_until_success
+{
+    my $command = shift or die "no command provided!";
+    my $max_retries = shift || 50;
+
+    my $dir = getcwd;
+    my $retry = 0;
+    my $ret = -1;
+    while($ret != 0 and $retry < $max_retries){
+        if ($retry){
+            my_log("--->ret: $ret, retry $retry, run_until_success[$dir]: $command");
+        }
+	else{
+	    my_log("--->run_until_success[$dir]: $command");
+	}
+	$ret = system("$command\n");
+        if ($ret != 0){
+            sleep(1);
+            $retry++;
+            next;
+        }
+        
+        break;
+    }
+    return $retry;
+
+}
+exit(0);
+
+sub get_repo_cache
+{
+    my $repo = shift or die "no repo provided!\n";
+    if ($repo eq 'https://chromium.googlesource.com/v8/v8.git') {
+	my_log("--->input repo[$repo]->[https://gitee.com/mirrors/V8.git]");
+        return 'https://gitee.com/mirrors/V8.git';
+    }
+    my_log("--->input repo[$repo]");
+    return $repo;
+}
+
+sub my_log
+{
+    my $log = shift or die "failed to open log1";
+    open(LOG_HANDLE, ">> $home_dir/git_proxy.log") or die "failed to open file:$home_dir/git_proxy.log, errno:$!\n";
+    print LOG_HANDLE "$log\n";
+    close(LOG_HANDLE);
+}
+
