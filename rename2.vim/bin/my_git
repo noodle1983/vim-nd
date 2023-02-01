@@ -169,6 +169,7 @@ if ($git_cmd eq "clone") {
         or $git_cmd eq "branch"
         or $git_cmd eq "log"
         or $git_cmd eq "config"
+        or $git_cmd eq "gui"
 	    ) {
         system($command);
     }else{
