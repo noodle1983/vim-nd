@@ -161,19 +161,12 @@ if ($git_cmd eq "clone") {
         }
 
     }
-    if ($git_cmd eq "checkout"
-        or $git_cmd eq "rev-parse"
-        or $git_cmd eq "HEAD"
-        or $git_cmd eq "status"
-        or $git_cmd eq "tag"
-        or $git_cmd eq "branch"
-        or $git_cmd eq "log"
-        or $git_cmd eq "config"
-        or $git_cmd eq "gui"
+    if ($git_cmd eq "pull"
+        or $git_cmd eq "fetch"
 	    ) {
-        system($command);
-    }else{
         run_until_success($command);
+    }else{
+        system($command);
     }
 }
 
