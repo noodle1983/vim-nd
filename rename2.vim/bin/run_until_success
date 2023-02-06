@@ -2,9 +2,14 @@
 
 PARAMS=$@
 
+function log(){
+    echo "$1"
+    echo "$1" >> ~/git_proxy.log
+}
+
 function run_until_success(){
-    echo "->[$PWD] $PARAMS"
-    ($PARAMS) || (echo "-> $PARAMS failed, wait 1 sec..."; sleep 1; run_until_success)
+    log "->[$PWD] $PARAMS"
+    ($PARAMS) || (log "-> $PARAMS failed, wait 1 sec..."; sleep 1; run_until_success)
 }
 
 run_until_success
