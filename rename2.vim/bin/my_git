@@ -19,12 +19,12 @@ if ($git_cmd =~ /^-/){
         next if ($option =~ /:/);
         next if ($option =~ /\d/);
 
-	last unless $option =~ 'clone';
+        last unless $option =~ 'clone';
 
-	splice(@ARGV, $i, 1);
-	$git_cmd = $option;
-	unshift(@ARGV, $git_cmd);
-	last;
+        splice(@ARGV, $i, 1);
+        $git_cmd = $option;
+        unshift(@ARGV, $git_cmd);
+        last;
     }
 }
 my_log("->shaped: git @ARGV");
@@ -156,10 +156,14 @@ if ($git_cmd eq "clone") {
         if ($option =~ m/ /){
             $command .= " \"$option\"";
         }
+        elsif ($option =~ /^--format=/){
+            $option =~ s/^--format=/--format='/;
+            $option =~ s/$/'/;
+            $command .= " $option";
+        }
         else{
             $command .= " $option";
         }
-
     }
     if ($git_cmd eq "pull"
         or $git_cmd eq "fetch"
