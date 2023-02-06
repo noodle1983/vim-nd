@@ -8,6 +8,7 @@ function log(){
 }
 
 function run_until_success(){
+    log ""
     log "->[$PWD] $PARAMS"
     ($PARAMS) || (log "-> $PARAMS failed, wait 1 sec..."; sleep 1; run_until_success)
 }
