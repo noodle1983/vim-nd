@@ -1,4 +1,4 @@
-apt install -y ruby ruby-dev lua5.4 liblua5.4-dev luajit \
+apt install -y ruby ruby-dev lua5.3 liblua5.3-dev luajit \
 libtexluajit-dev exuberant-ctags git  python3 python3-dev \
  tcl-dev \
 perl libperl-dev libextutils-parsexs-perl \
