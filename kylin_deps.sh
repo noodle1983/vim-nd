@@ -1,0 +1,1 @@
+apt install -y ruby ruby-dev  luajit libtexluajit-dev exuberant-ctags git  python3 python3-dev  tcl-dev perl libperl-dev  libextutils-xspp-perl libextutils-cbuilder-perl perl-modules-5.30  libncurses-dev libgtk2.0-dev
