@@ -1,5 +1,6 @@
 #!/bin/bash
 VIM_DIR_NAME=vim$(egrep '\s(VIM_VERSION_MAJOR|VIM_VERSION_MINOR)\s' vim/src/version.h |tr -cd 0-9)
+echo "VIM_DIR_NAME=${VIM_DIR_NAME}"
 
 cd vim
 export CFLAGS=-fPIC
