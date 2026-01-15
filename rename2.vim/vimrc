@@ -10,7 +10,7 @@ set tabstop=4
 set expandtab
 set shiftwidth=4
 set showmatch
-colorscheme desert
+colorscheme catppuccin_mocha
 filetype plugin indent on
 syntax on
 set hlsearch
